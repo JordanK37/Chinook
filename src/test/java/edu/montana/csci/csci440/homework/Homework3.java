@@ -33,12 +33,12 @@ public class Homework3 extends DBTest {
 
         try(Connection connection = DB.connect()){
             connection.setAutoCommit(false);
-            PreparedStatement subtract = connection.prepareStatement("TODO");
+            PreparedStatement subtract = connection.prepareStatement("BEGIN TRANSACTION; SET track1InitialTime=(track1InitialTime - 10) WHERE TrackId = 1; COMMIT;");
             subtract.setLong(1, 0);
             subtract.setLong(2, 0);
             subtract.execute();
 
-            PreparedStatement add = connection.prepareStatement("TODO");
+            PreparedStatement add = connection.prepareStatement("BEGIN TRANSACTION; SET track1InitialTime=(track1InitialTime + 10) WHERE TrackId = 2; COMMIT;");
             subtract.setLong(1, 0);
             subtract.setLong(2, 0);
             subtract.execute();

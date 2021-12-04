@@ -35,7 +35,7 @@ public class Homework2 extends DBTest {
      * Create a table grammy_category
      */
     public void createGrammyInfoTable(){
-        //TODO fill these in
+
         executeDDL("create table grammy_categories");
         executeDDL("create table grammy_infos");
 
