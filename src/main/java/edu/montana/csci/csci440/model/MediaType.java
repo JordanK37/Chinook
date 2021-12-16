@@ -1,7 +1,6 @@
 package edu.montana.csci.csci440.model;
 
 import edu.montana.csci.csci440.util.DB;
-import org.eclipse.jetty.http.MetaData;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,6 +1,5 @@
 package edu.montana.csci.csci440.model;
 
-import com.fasterxml.jackson.databind.type.CollectionType;
 import edu.montana.csci.csci440.util.DB;
 import redis.clients.jedis.Jedis;
 
@@ -9,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 

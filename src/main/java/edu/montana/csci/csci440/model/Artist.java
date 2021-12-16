@@ -1,15 +1,9 @@
 package edu.montana.csci.csci440.model;
-
 import edu.montana.csci.csci440.util.DB;
-import org.javalite.activejdbc.annotations.VersionColumn;
-
-import javax.naming.Name;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -55,8 +49,7 @@ public class Artist extends Model {
     public static List<Artist> all(int page, int count) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM artists LIMIT ? OFFSET ?"
-             )) {
+                     "SELECT * FROM artists LIMIT ? OFFSET ?")) {
             stmt.setInt(1, count);
             stmt.setInt(2, (page-1)*count);
             ResultSet results = stmt.executeQuery();
