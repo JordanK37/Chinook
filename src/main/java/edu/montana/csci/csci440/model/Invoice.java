@@ -27,15 +27,28 @@ public class Invoice extends Model {
         billingAddress = results.getString("BillingAddress");
         billingState = results.getString("BillingState");
         billingCountry = results.getString("BillingCountry");
+        billingCity = results.getString("BillingCity");
         billingPostalCode = results.getString("BillingPostalCode");
         total = results.getBigDecimal("Total");
         invoiceId = results.getLong("InvoiceId");
     }
 
     public List<InvoiceItem> getInvoiceItems(){
-        //TODO implement
-        return Collections.emptyList();
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM invoice_items WHERE InvoiceId=? "))
+        {
+            stmt.setLong(1, invoiceId);
+            ResultSet results = stmt.executeQuery();
+            List<InvoiceItem> resultList = new LinkedList<>();
+            while (results.next()) {
+                resultList.add(new InvoiceItem());
+            }
+            return resultList;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
     }
+
     public Customer getCustomer() {
         return null;
     }
@@ -44,17 +57,13 @@ public class Invoice extends Model {
         return invoiceId;
     }
 
-    public String getBillingAddress() {
-        return billingAddress;
-    }
+    public String getBillingAddress() { return billingAddress; }
 
     public void setBillingAddress(String billingAddress) {
         this.billingAddress = billingAddress;
     }
 
-    public String getBillingCity() {
-        return billingCity;
-    }
+    public String getBillingCity() { return billingCity; }
 
     public void setBillingCity(String billingCity) {
         this.billingCity = billingCity;
@@ -99,9 +108,10 @@ public class Invoice extends Model {
     public static List<Invoice> all(int page, int count) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM invoices LIMIT ?"
+                     "SELECT * FROM invoices LIMIT ? OFFSET ?"
              )) {
             stmt.setInt(1, count);
+            stmt.setInt(2, (page-1)*count);
             ResultSet results = stmt.executeQuery();
             List<Invoice> resultList = new LinkedList<>();
             while (results.next()) {

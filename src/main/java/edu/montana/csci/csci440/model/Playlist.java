@@ -18,24 +18,34 @@ public class Playlist extends Model {
     public Playlist() {
     }
 
-    private Playlist(ResultSet results) throws SQLException {
+    public Playlist(ResultSet results) throws SQLException {
         name = results.getString("Name");
         playlistId = results.getLong("PlaylistId");
     }
 
 
-    public List<Track> getTracks(){
-        // TODO implement, order by track name
-        return Collections.emptyList();
+    public List<Track> getTracks() {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks WHERE tracks.trackId in (SELECT playlist_track.trackId" +
+                     " FROM playlist_track WHERE playlist_track.playlistID = ?) ORDER BY tracks.name"))
+        {
+            stmt.setLong(1, playlistId);
+            ResultSet results = stmt.executeQuery();
+            List<Track> resultList = new LinkedList<>();
+            while (results.next()) {
+                resultList.add(new Track(results));
+            }
+            return resultList;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
     }
 
     public Long getPlaylistId() {
         return playlistId;
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
     public void setName(String name) {
         this.name = name;
@@ -48,9 +58,10 @@ public class Playlist extends Model {
     public static List<Playlist> all(int page, int count) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM playlists LIMIT ?"
+                     "SELECT * FROM playlists LIMIT ? OFFSET ?"
              )) {
             stmt.setInt(1, count);
+            stmt.setInt(2, (page - 1)*count);
             ResultSet results = stmt.executeQuery();
             List<Playlist> resultList = new LinkedList<>();
             while (results.next()) {

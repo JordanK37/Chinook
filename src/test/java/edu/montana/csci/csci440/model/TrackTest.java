@@ -58,8 +58,7 @@ public class TrackTest extends DBTest {
     void testValidationWorks() {
         Track track = new Track();
 
-        assertFalse(track.verify());
-        // expect a name and album
+        assertFalse(track.verify()); //need a name and album
         assertEquals(2, track.getErrors().size());
 
         track.setName("Example");
